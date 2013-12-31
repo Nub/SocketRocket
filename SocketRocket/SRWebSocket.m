@@ -600,9 +600,21 @@ static __strong NSData *CRLFCRLF;
         [self scheduleInRunLoop:[NSRunLoop SR_networkRunLoop] forMode:NSDefaultRunLoopMode];
     }
     
-    
+    //setup voip socket properties
+    self.useVoipSocketType = _useVoipSocketType;
+	
     [_outputStream open];
     [_inputStream open];
+}
+
+- (void)setUseVoipSocketType:(BOOL)useVoipSocketType {
+    _useVoipSocketType = useVoipSocketType;
+    if (_inputStream && _outputStream) {
+        if (_useVoipSocketType) {
+            [_inputStream setProperty:NSStreamNetworkServiceTypeVoIP forKey:NSStreamNetworkServiceType];
+            [_outputStream setProperty:NSStreamNetworkServiceTypeVoIP forKey:NSStreamNetworkServiceType];
+        }
+    }
 }
 
 - (void)scheduleInRunLoop:(NSRunLoop *)aRunLoop forMode:(NSString *)mode;
